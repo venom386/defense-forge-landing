@@ -159,22 +159,129 @@
             opacity: 0.9;
         }
 
-        .simulator-placeholder {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            padding: 3rem;
+        .simulator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
             margin: 2rem 0;
         }
 
-        .simulator-placeholder h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+        .simulator-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
         }
 
-        .simulator-placeholder p {
-            opacity: 0.8;
+        .simulator-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(74, 144, 164, 0.1), rgba(39, 174, 96, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .simulator-card.available {
+            cursor: pointer;
+            border-color: rgba(74, 144, 164, 0.3);
+        }
+
+        .simulator-card.available:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(74, 144, 164, 0.25);
+            border-color: #4a90a4;
+        }
+
+        .simulator-card.available:hover::before {
+            opacity: 1;
+        }
+
+        .simulator-card.coming-soon {
+            opacity: 0.7;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .simulator-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .simulator-card h3 {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .simulator-card p {
+            color: #5a6c7d;
+            line-height: 1.6;
             margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .simulator-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .simulator-card.available .simulator-status {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .simulator-card.coming-soon .simulator-status {
+            background: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .simulator-cta {
+            color: #4a90a4;
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+            transition: color 0.3s ease;
+        }
+
+        .simulator-card.available:hover .simulator-cta {
+            color: #2c3e50;
+        }
+
+        .simulator-card.coming-soon .simulator-cta {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .simulator-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .simulator-footer p {
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .skills-grid {
@@ -296,19 +403,41 @@
 
         <!-- Interactive Simulator Section -->
         <section id="simulator" class="section simulator">
-            <h2>🚨 Security Alert Triage Simulator</h2>
+            <h2>🚨 Interactive Security Simulators</h2>
             <p class="simulator-intro">
-                Experience how I approach security incidents. Step through a real phishing investigation 
-                and see the methodology I use to protect organizations every day.
+                Experience how I approach different security incidents. Choose a scenario and step through 
+                my real-world investigation methodology.
             </p>
             
-            <div class="simulator-placeholder">
-                <h3>Interactive Phishing Investigation</h3>
-                <p>Follow my step-by-step approach to analyzing suspicious emails, 
-                from header analysis to impact assessment.</p>
-                <div class="coming-soon">🚧 Coming Soon - Interactive Simulator 🚧</div>
-                <p><em>This will be a hands-on experience where you can follow my investigation process 
-                and see how I make security decisions in real-time.</em></p>
+            <div class="simulator-grid">
+                <div class="simulator-card available" onclick="window.open('phishing-simulator.html', '_blank')">
+                    <div class="simulator-icon">📧</div>
+                    <h3>Phishing Email Investigation</h3>
+                    <p>Follow my step-by-step approach to analyzing suspicious emails, from header analysis to threat classification and incident response.</p>
+                    <div class="simulator-status">✅ Available Now</div>
+                    <div class="simulator-cta">Start Investigation →</div>
+                </div>
+
+                <div class="simulator-card coming-soon">
+                    <div class="simulator-icon">🔒</div>
+                    <h3>Account Compromise Response</h3>
+                    <p>Navigate through investigating suspicious login activity, analyzing access patterns, and implementing containment measures.</p>
+                    <div class="simulator-status">🚧 Coming Soon</div>
+                    <div class="simulator-cta">In Development</div>
+                </div>
+
+                <div class="simulator-card coming-soon">
+                    <div class="simulator-icon">🦠</div>
+                    <h3>Malware Incident Analysis</h3>
+                    <p>Experience endpoint forensics, process tree analysis, and malware containment strategies in a real-world scenario.</p>
+                    <div class="simulator-status">🚧 Coming Soon</div>
+                    <div class="simulator-cta">In Development</div>
+                </div>
+            </div>
+
+            <div class="simulator-footer">
+                <p><em>Each simulator demonstrates real investigation techniques I use daily. 
+                Perfect for understanding my approach to cybersecurity incident response.</em></p>
             </div>
         </section>
 
@@ -355,7 +484,7 @@
                 <div class="skill-card">
                     <h3>🔗 GitHub Portfolio</h3>
                     <p>Infrastructure as Code projects, automation scripts, and security tools.</p>
-                    <div class="coming-soon">🚧 GitHub Link Coming Soon 🚧</div>
+                    <a href="https://github.com/venom386" target="_blank" style="color: #4a90a4; text-decoration: none; font-weight: 600;">→ Check Out My Github</a>
                 </div>
                 <div class="skill-card">
                     <h3>🏆 Certifications</h3>
@@ -376,8 +505,8 @@
                 <a href="mailto:admin@defense-forge.com" class="contact-link">
                     📧 admin@defense-forge.com
                 </a>
-                <a href="#" class="contact-link">
-                    🐙 GitHub (Coming Soon)
+                <a href="https://github.com/venom386" class="contact-link">
+                    🐙 GitHub
                 </a>
                 <a href="#" class="contact-link">
                     💼 LinkedIn (Coming Soon)
