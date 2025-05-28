@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defense Forge - Cybersecurity Professional</title>
+    <meta name="description" content="Cybersecurity Manager specializing in threat hunting, incident response, and security automation. 25+ years of IT experience.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #4a90a4 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234a90a4' fill-opacity='0.03'%3E%3Cpath d='M30 30c0-11.046 8.954-20 20-20s20 8.954 20 20-8.954 20-20 20-20-8.954-20-20zm0 0c0 11.046-8.954 20-20 20s-20-8.954-20-20 8.954-20 20-20 20 8.954 20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .shield-icon {
+            font-size: 3rem;
+            color: #4a90a4;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .hero .tagline {
+            font-size: 1.3rem;
+            color: #5a6c7d;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .hero .description {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #4a90a4;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3a7a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 164, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #4a90a4;
+            border: 2px solid #4a90a4;
+        }
+
+        .btn-secondary:hover {
+            background: #4a90a4;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .simulator {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .simulator h2 {
+            color: white;
+        }
+
+        .simulator-intro {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .simulator-placeholder {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 3rem;
+            margin: 2rem 0;
+        }
+
+        .simulator-placeholder h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .simulator-placeholder p {
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .skill-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #4a90a4;
+            transition: transform 0.3s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .skill-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-card p {
+            color: #5a6c7d;
+            font-size: 0.95rem;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4a90a4;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .contact-link:hover {
+            color: #3a7a8a;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .hero {
+                padding: 2rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+
+        .coming-soon {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: 600;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="shield-icon">🛡️</div>
+                <h1>Defense Forge</h1>
+                <p class="tagline">Cybersecurity Manager | Threat Hunter | Security Automation Enthusiast</p>
+                <p class="description">
+                    With 25+ years in IT and a passion for security automation, I specialize in threat hunting, 
+                    incident response, and building robust defense systems. From helpdesk to security leadership, 
+                    I've learned that the best defense combines technical expertise with strategic thinking.
+                </p>
+                <div class="cta-buttons">
+                    <a href="#simulator" class="btn btn-primary">🎯 Try My Alert Triage Simulator</a>
+                    <a href="#contact" class="btn btn-secondary">📧 Get In Touch</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Simulator Section -->
+        <section id="simulator" class="section simulator">
+            <h2>🚨 Security Alert Triage Simulator</h2>
+            <p class="simulator-intro">
+                Experience how I approach security incidents. Step through a real phishing investigation 
+                and see the methodology I use to protect organizations every day.
+            </p>
+            
+            <div class="simulator-placeholder">
+                <h3>Interactive Phishing Investigation</h3>
+                <p>Follow my step-by-step approach to analyzing suspicious emails, 
+                from header analysis to impact assessment.</p>
+                <div class="coming-soon">🚧 Coming Soon - Interactive Simulator 🚧</div>
+                <p><em>This will be a hands-on experience where you can follow my investigation process 
+                and see how I make security decisions in real-time.</em></p>
+            </div>
+        </section>
+
+        <!-- Skills & Experience Section -->
+        <section class="section">
+            <h2>🎯 Core Expertise</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>🕵️ Threat Hunting</h3>
+                    <p>Proactive identification of threats through systematic investigation and analysis of security data.</p>
+                </div>
+                <div class="skill-card">
+                    <h3>🚨 Incident Response</h3>
+                    <p>Rapid containment and investigation of security incidents, from phishing to malware outbreaks.</p>
+                </div>
+                <div class="skill-card">
+                    <h3>📧 Email Security</h3>
+                    <p>Expert analysis of phishing attempts, email authentication, and social engineering attacks.</p>
+                </div>
+                <div class="skill-card">
+                    <h3>🔐 Account Security</h3>
+                    <p>Investigation of compromised accounts, credential analysis, and access management.</p>
+                </div>
+                <div class="skill-card">
+                    <h3>🦠 Malware Analysis</h3>
+                    <p>Endpoint forensics, process analysis, and malware containment strategies.</p>
+                </div>
+                <div class="skill-card">
+                    <h3>⚡ Security Automation</h3>
+                    <p>Building tools and processes to scale security operations and reduce manual overhead.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects & Portfolio Section -->
+        <section class="section">
+            <h2>🚀 Recent Projects</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>📝 DevOps Learning Blog</h3>
+                    <p>Chronicling my journey from sysadmin to Infrastructure as Code, built with Azure Static Web Apps and GitHub Actions.</p>
+                    <a href="https://blog.defense-forge.com/" target="_blank" style="color: #4a90a4; text-decoration: none; font-weight: 600;">→ Read My Blog</a>
+                </div>
+                <div class="skill-card">
+                    <h3>🔗 GitHub Portfolio</h3>
+                    <p>Infrastructure as Code projects, automation scripts, and security tools.</p>
+                    <div class="coming-soon">🚧 GitHub Link Coming Soon 🚧</div>
+                </div>
+                <div class="skill-card">
+                    <h3>🏆 Certifications</h3>
+                    <p>Professional certifications and continuous learning in cybersecurity.</p>
+                    <div class="coming-soon">🚧 Cert Badges Coming Soon 🚧</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h2>📬 Let's Connect</h2>
+            <p style="text-align: center; margin-bottom: 2rem; font-size: 1.1rem;">
+                Interested in discussing cybersecurity, automation, or potential opportunities? 
+                I'd love to hear from you.
+            </p>
+            <div class="contact-links">
+                <a href="mailto:admin@defense-forge.com" class="contact-link">
+                    📧 admin@defense-forge.com
+                </a>
+                <a href="#" class="contact-link">
+                    🐙 GitHub (Coming Soon)
+                </a>
+                <a href="#" class="contact-link">
+                    💼 LinkedIn (Coming Soon)
+                </a>
+                <a href="https://blog.defense-forge.com/" class="contact-link" target="_blank">
+                    📝 Technical Blog
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>© 2025 Defense Forge | Built with Infrastructure as Code ⚡</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('a[href^="#"]');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Add some interactive hover effects
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
