@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Alert Triage Simulator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .simulator-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            color: #2c3e50;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .scenario-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .scenario-header h1 {
+            color: #e74c3c;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .scenario-header p {
+            font-size: 1.1rem;
+            color: #5a6c7d;
+        }
+
+        .email-preview {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+
+        .email-header {
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .email-body {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .step-container {
+            margin: 30px 0;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .step-description {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4a90a4;
+        }
+
+        .choices {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .choice-button {
+            background: white;
+            border: 2px solid #4a90a4;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .choice-button:hover {
+            background: #4a90a4;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 164, 0.3);
+        }
+
+        .choice-button.selected {
+            background: #4a90a4;
+            color: white;
+        }
+
+        .choice-button.correct {
+            background: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        .choice-button.incorrect {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+
+        .explanation {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .explanation h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .explanation p {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .pro-tip {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .pro-tip h5 {
+            color: #856404;
+            margin-bottom: 8px;
+        }
+
+        .pro-tip p {
+            color: #856404;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .next-button {
+            background: #4a90a4;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .next-button:hover {
+            background: #3a7a8a;
+            transform: translateY(-2px);
+        }
+
+        .next-button.show {
+            display: inline-block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a90a4, #27ae60);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .final-summary {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .final-summary.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .final-summary h2 {
+            margin-bottom: 20px;
+        }
+
+        .reset-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .reset-button:hover {
+            background: white;
+            color: #27ae60;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="simulator-container">
+        <div class="scenario-header">
+            <h1>🚨 Phishing Alert Triage Simulator</h1>
+            <p>Step through a real phishing investigation using my methodology</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <!-- Initial Email Alert -->
+        <div id="step0" class="step-container">
+            <div class="step-title">📧 Initial Alert</div>
+            <div class="step-description">
+                A user just forwarded you this suspicious email asking if it's legitimate:
+            </div>
+            
+            <div class="email-preview">
+                <div class="email-header">
+                    <strong>From:</strong> ceo@yourc0mpany.com<br>
+                    <strong>To:</strong> employee@yourcompany.com<br>
+                    <strong>Subject:</strong> URGENT: Client Gift Cards Needed<br>
+                    <strong>Date:</strong> Today, 2:47 PM
+                </div>
+                <div class="email-body">
+                    <p><strong>Hi,</strong></p>
+                    <p>I need you to purchase $500 in iTunes gift cards immediately for a client meeting. This is urgent and confidential.</p>
+                    <p>Please buy them at the nearest store and send me the card numbers and PINs via email as soon as possible.</p>
+                    <p>Thanks,<br>CEO</p>
+                </div>
+            </div>
+
+            <div class="step-description">
+                <strong>What's your first action as the security analyst?</strong>
+            </div>
+
+            <div class="choices">
+                <div class="choice-button" onclick="selectChoice(0, 0, false)">
+                    <strong>A)</strong> Call the CEO immediately to verify the request
+                </div>
+                <div class="choice-button" onclick="selectChoice(0, 1, true)">
+                    <strong>B)</strong> Analyze email headers and authentication records first
+                </div>
+                <div class="choice-button" onclick="selectChoice(0, 2, false)">
+                    <strong>C)</strong> Tell the user it's obviously fake and move on
+                </div>
+            </div>
+
+            <div id="explanation0" class="explanation">
+                <h4>✅ Correct! Always start with technical analysis</h4>
+                <p>While calling the CEO might seem logical, starting with email headers gives you objective technical evidence first. This helps you build a complete picture before involving executives.</p>
+                <div class="pro-tip">
+                    <h5>🎯 Pro Tip:</h5>
+                    <p>Email headers reveal authentication status (SPF, DKIM, DMARC), routing information, and sender reputation - all crucial for determining legitimacy.</p>
+                </div>
+            </div>
+
+            <button class="next-button" id="nextBtn0" onclick="nextStep(1)">Continue Investigation →</button>
+        </div>
+
+        <!-- Header Analysis Step -->
+        <div id="step1" class="step-container hidden">
+            <div class="step-title">🔍 Header Analysis Results</div>
+            <div class="step-description">
+                You analyze the email headers using MXToolbox and discover:
+                <ul>
+                    <li><strong style="color: #e74c3c;">SPF: FAIL</strong> - Sender IP not authorized</li>
+                    <li><strong style="color: #e74c3c;">DKIM: FAIL</strong> - Invalid signature</li>
+                    <li><strong style="color: #e74c3c;">DMARC: FAIL</strong> - Policy violation</li>
+                    <li>Email routed through multiple suspicious relay servers</li>
+                    <li>Sender used "c0mpany" (zero instead of 'o') in domain name</li>
+                </ul>
+            </div>
+
+            <div class="step-description">
+                <strong>Based on these findings, what's your next step?</strong>
+            </div>
+
+            <div class="choices">
+                <div class="choice-button" onclick="selectChoice(1, 0, false)">
+                    <strong>A)</strong> Immediately block the sender domain
+                </div>
+                <div class="choice-button" onclick="selectChoice(1, 1, true)">
+                    <strong>B)</strong> Check if the email contains any links or attachments to analyze
+                </div>
+                <div class="choice-button" onclick="selectChoice(1, 2, false)">
+                    <strong>C)</strong> Case closed - obviously fake, notify user
+                </div>
+            </div>
+
+            <div id="explanation1" class="explanation">
+                <h4>✅ Excellent investigative approach!</h4>
+                <p>While the headers clearly indicate this is malicious, a thorough investigation requires checking all attack vectors. Links could lead to credential harvesting, and attachments might contain malware.</p>
+                <div class="pro-tip">
+                    <h5>🎯 Pro Tip:</h5>
+                    <p>Complete investigations help you understand the full scope of the attack and improve your organization's defenses against similar attempts.</p>
+                </div>
+            </div>
+
+            <button class="next-button" id="nextBtn1" onclick="nextStep(2)">Analyze Links →</button>
+        </div>
+
+        <!-- Link Analysis Step -->
+        <div id="step2" class="step-container hidden">
+            <div class="step-title">🔗 Link Analysis</div>
+            <div class="step-description">
+                You notice the email doesn't contain obvious links, but you run it through URLScan.io anyway and discover:
+                <ul>
+                    <li>Hidden redirect embedded in "client meeting" text</li>
+                    <li>Link redirects to: fake-login-yourcompany.herokuapp.com</li>
+                    <li>Site mimics your company's Office 365 login page</li>
+                    <li>Recently created domain (2 days old)</li>
+                </ul>
+            </div>
+
+            <div class="step-description">
+                <strong>This discovery changes your threat assessment. What type of attack is this?</strong>
+            </div>
+
+            <div class="choices">
+                <div class="choice-button" onclick="selectChoice(2, 0, false)">
+                    <strong>A)</strong> Mass phishing campaign - untargeted attack
+                </div>
+                <div class="choice-button" onclick="selectChoice(2, 1, true)">
+                    <strong>B)</strong> Spear phishing - targeted attack requiring more investigation
+                </div>
+                <div class="choice-button" onclick="selectChoice(2, 2, false)">
+                    <strong>C)</strong> Simple gift card scam - low sophistication
+                </div>
+            </div>
+
+            <div id="explanation2" class="explanation">
+                <h4>✅ Sharp analysis!</h4>
+                <p>The combination of CEO impersonation, credential harvesting site, and company-specific branding indicates a targeted spear phishing attack. This requires expanded investigation to determine scope and impact.</p>
+                <div class="pro-tip">
+                    <h5>🎯 Pro Tip:</h5>
+                    <p>Spear phishing attacks often precede larger breaches. The credential harvesting component suggests attackers are seeking persistent access, not just gift cards.</p>
+                </div>
+            </div>
+
+            <button class="next-button" id="nextBtn2" onclick="nextStep(3)">Assess Impact →</button>
+        </div>
+
+        <!-- Impact Assessment Step -->
+        <div id="step3" class="step-container hidden">
+            <div class="step-title">📊 Impact Assessment & Response</div>
+            <div class="step-description">
+                Time to determine scope and implement containment measures:
+            </div>
+
+            <div class="step-description">
+                <strong>What's your priority response action?</strong>
+            </div>
+
+            <div class="choices">
+                <div class="choice-button" onclick="selectChoice(3, 0, false)">
+                    <strong>A)</strong> Search for other employees who received similar emails
+                </div>
+                <div class="choice-button" onclick="selectChoice(3, 1, false)">
+                    <strong>B)</strong> Block the malicious domain and update email filters
+                </div>
+                <div class="choice-button" onclick="selectChoice(3, 2, true)">
+                    <strong>C)</strong> All of the above - comprehensive response required
+                </div>
+            </div>
+
+            <div id="explanation3" class="explanation">
+                <h4>✅ Perfect! Comprehensive incident response</h4>
+                <p>Spear phishing attacks require multi-layered response: immediate containment (blocking), scope assessment (finding other targets), and prevention (updating controls). This systematic approach prevents escalation.</p>
+                <div class="pro-tip">
+                    <h5>🎯 Pro Tip:</h5>
+                    <p>Document everything! Your investigation steps, IOCs discovered, and response actions help improve organizational defenses and support potential law enforcement action.</p>
+                </div>
+            </div>
+
+            <button class="next-button" id="nextBtn3" onclick="showFinalSummary()">Complete Investigation →</button>
+        </div>
+
+        <!-- Final Summary -->
+        <div id="finalSummary" class="final-summary">
+            <h2>🎉 Investigation Complete!</h2>
+            <p><strong>You successfully identified and contained a spear phishing attack!</strong></p>
+            <p>Your systematic approach demonstrated:</p>
+            <ul style="text-align: left; max-width: 500px; margin: 20px auto;">
+                <li>✅ Technical analysis before assumptions</li>
+                <li>✅ Thorough investigation of all attack vectors</li>
+                <li>✅ Proper threat classification</li>
+                <li>✅ Comprehensive incident response</li>
+            </ul>
+            <p>This methodology helps protect organizations from sophisticated social engineering attacks that could lead to data breaches or financial fraud.</p>
+            <button class="reset-button" onclick="resetSimulator()">Try Another Scenario</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const totalSteps = 4;
+
+        function selectChoice(step, choice, isCorrect) {
+            // Remove previous selections
+            const buttons = document.querySelectorAll(`#step${step} .choice-button`);
+            buttons.forEach(btn => {
+                btn.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            // Mark selected choice
+            const selectedButton = buttons[choice];
+            selectedButton.classList.add('selected');
+            
+            // Show correct/incorrect styling
+            buttons.forEach((btn, index) => {
+                if (index === choice) {
+                    btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+
+            // Show appropriate explanation based on choice
+            showExplanation(step, choice, isCorrect);
+
+            // Show next button
+            const nextBtn = document.getElementById(`nextBtn${step}`);
+            if (nextBtn) {
+                nextBtn.classList.add('show');
+            }
+
+            // Update progress
+            updateProgress();
+        }
+
+        function showExplanation(step, choice, isCorrect) {
+            const explanation = document.getElementById(`explanation${step}`);
+            
+            if (step === 0) {
+                if (choice === 0) { // Choice A - Call CEO
+                    explanation.innerHTML = `
+                        <h4>❌ Not the best first step</h4>
+                        <p>While verifying with the CEO seems logical, starting with technical analysis gives you objective evidence first. Calling executives without technical proof can waste time and resources.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Always gather technical evidence before escalating. Email headers reveal authentication status and routing information that prove legitimacy objectively.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#f8d7da';
+                    explanation.style.borderColor = '#f5c6cb';
+                } else if (choice === 1) { // Choice B - Analyze headers (correct)
+                    explanation.innerHTML = `
+                        <h4>✅ Correct! Always start with technical analysis</h4>
+                        <p>Starting with email headers gives you objective technical evidence first. This helps you build a complete picture before involving executives.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Email headers reveal authentication status (SPF, DKIM, DMARC), routing information, and sender reputation - all crucial for determining legitimacy.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#d4edda';
+                    explanation.style.borderColor = '#c3e6cb';
+                } else if (choice === 2) { // Choice C - Tell user it's fake
+                    explanation.innerHTML = `
+                        <h4>❌ Too hasty - investigate first</h4>
+                        <p>While this might look obviously fake, professional security analysis requires evidence. Making assumptions without investigation can lead to missed threats or false positives.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Document your investigation process. Even "obvious" cases need proper analysis for legal evidence and improving organizational defenses.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#f8d7da';
+                    explanation.style.borderColor = '#f5c6cb';
+                }
+            } else if (step === 1) {
+                if (choice === 0) { // Choice A - Block sender immediately
+                    explanation.innerHTML = `
+                        <h4>❌ Premature containment</h4>
+                        <p>While blocking is important, rushing to containment without complete investigation can miss other attack vectors. You need to understand the full scope first.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Incomplete investigations often miss secondary payloads, credential harvesting sites, or other victims. Always complete your technical analysis first.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#f8d7da';
+                    explanation.style.borderColor = '#f5c6cb';
+                } else if (choice === 1) { // Choice B - Check links/attachments (correct)
+                    explanation.innerHTML = `
+                        <h4>✅ Excellent investigative approach!</h4>
+                        <p>While the headers clearly indicate this is malicious, a thorough investigation requires checking all attack vectors. Links could lead to credential harvesting, and attachments might contain malware.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Complete investigations help you understand the full scope of the attack and improve your organization's defenses against similar attempts.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#d4edda';
+                    explanation.style.borderColor = '#c3e6cb';
+                } else if (choice === 2) { // Choice C - Case closed
+                    explanation.innerHTML = `
+                        <h4>❌ Investigation incomplete</h4>
+                        <p>While you've confirmed it's malicious, stopping here misses critical intelligence. Modern attacks often have multiple components that need analysis.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Each phishing attempt teaches you about attacker tactics. Full analysis helps you improve detection rules and user training programs.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#f8d7da';
+                    explanation.style.borderColor = '#f5c6cb';
+                }
+            } else if (step === 2) {
+                if (choice === 0) { // Choice A - Mass phishing
+                    explanation.innerHTML = `
+                        <h4>❌ Underestimating the threat</h4>
+                        <p>The CEO impersonation, company-specific credential harvesting site, and hidden redirects indicate sophisticated targeting, not mass phishing.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Mass phishing uses generic templates. When attackers research specific executives and create company-branded phishing sites, it's targeted spear phishing.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#f8d7da';
+                    explanation.style.borderColor = '#f5c6cb';
+                } else if (choice === 1) { // Choice B - Spear phishing (correct)
+                    explanation.innerHTML = `
+                        <h4>✅ Sharp analysis!</h4>
+                        <p>The combination of CEO impersonation, credential harvesting site, and company-specific branding indicates a targeted spear phishing attack. This requires expanded investigation to determine scope and impact.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Spear phishing attacks often precede larger breaches. The credential harvesting component suggests attackers are seeking persistent access, not just gift cards.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#d4edda';
+                    explanation.style.borderColor = '#c3e6cb';
+                } else if (choice === 2) { // Choice C - Simple gift card scam
+                    explanation.innerHTML = `
+                        <h4>❌ Missing the bigger picture</h4>
+                        <p>While it appears to be about gift cards, the credential harvesting site reveals the real goal: stealing login credentials for persistent access to your organization.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Social engineering often uses familiar requests (gift cards, invoices) to hide sophisticated technical attacks. Always analyze all components.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#f8d7da';
+                    explanation.style.borderColor = '#f5c6cb';
+                }
+            } else if (step === 3) {
+                if (choice === 0) { // Choice A - Search for other recipients
+                    explanation.innerHTML = `
+                        <h4>⚠️ Good thinking, but incomplete</h4>
+                        <p>Finding other targets is important for scope assessment, but spear phishing requires immediate containment AND scope assessment AND prevention measures.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Incident response requires parallel actions: immediate containment to stop ongoing damage while simultaneously assessing scope and impact.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#fff3cd';
+                    explanation.style.borderColor = '#ffeaa7';
+                } else if (choice === 1) { // Choice B - Block domain and update filters
+                    explanation.innerHTML = `
+                        <h4>⚠️ Good start, but insufficient</h4>
+                        <p>Blocking and filtering are essential, but you also need to determine if other employees were targeted and if any credentials were already compromised.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Spear phishing often targets multiple employees. Without scope assessment, you might miss compromised accounts or additional attack vectors.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#fff3cd';
+                    explanation.style.borderColor = '#ffeaa7';
+                } else if (choice === 2) { // Choice C - All of the above (correct)
+                    explanation.innerHTML = `
+                        <h4>✅ Perfect! Comprehensive incident response</h4>
+                        <p>Spear phishing attacks require multi-layered response: immediate containment (blocking), scope assessment (finding other targets), and prevention (updating controls). This systematic approach prevents escalation.</p>
+                        <div class="pro-tip">
+                            <h5>🎯 Pro Tip:</h5>
+                            <p>Document everything! Your investigation steps, IOCs discovered, and response actions help improve organizational defenses and support potential law enforcement action.</p>
+                        </div>
+                    `;
+                    explanation.style.background = '#d4edda';
+                    explanation.style.borderColor = '#c3e6cb';
+                }
+            }
+            
+            explanation.classList.add('show');
+        }
+
+        function nextStep(stepNumber) {
+            // Hide current step
+            document.getElementById(`step${currentStep}`).classList.add('hidden');
+            
+            // Show next step
+            document.getElementById(`step${stepNumber}`).classList.remove('hidden');
+            
+            currentStep = stepNumber;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = ((currentStep + 1) / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function showFinalSummary() {
+            // Hide current step
+            document.getElementById(`step${currentStep}`).classList.add('hidden');
+            
+            // Show final summary
+            document.getElementById('finalSummary').classList.add('show');
+            
+            // Complete progress bar
+            document.getElementById('progressBar').style.width = '100%';
+        }
+
+        function resetSimulator() {
+            // Hide all steps and summary
+            for (let i = 0; i < totalSteps; i++) {
+                const step = document.getElementById(`step${i}`);
+                step.classList.add('hidden');
+                
+                // Reset choices
+                const buttons = step.querySelectorAll('.choice-button');
+                buttons.forEach(btn => {
+                    btn.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // Hide explanations and next buttons
+                const explanation = step.querySelector('.explanation');
+                const nextBtn = step.querySelector('.next-button');
+                if (explanation) explanation.classList.remove('show');
+                if (nextBtn) nextBtn.classList.remove('show');
+            }
+
+            document.getElementById('finalSummary').classList.remove('show');
+            
+            // Show first step
+            document.getElementById('step0').classList.remove('hidden');
+            currentStep = 0;
+            
+            // Reset progress
+            document.getElementById('progressBar').style.width = '0%';
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
